@@ -1,24 +1,8 @@
 import * as jose from "jose";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import type { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
-import type { DefaultJWT, JWT } from "next-auth/jwt";
-
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    appAccessToken: string;
-    idToken: string;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
-    iat: number;
-    exp: number;
-    jti: string;
-    userRole?: string;
-  }
-}
+import type { NextAuthOptions, Session, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 
 export const Option: NextAuthOptions = {
   debug: true,
@@ -52,7 +36,6 @@ export const Option: NextAuthOptions = {
           .setJti(String(token.jti))
           .sign(secret);
       }
-      console.log({ session });
 
       return session;
     },
