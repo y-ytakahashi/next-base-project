@@ -16,6 +16,8 @@ export const PokemonCard = ({ name, index }: PokemonCardProps) => {
             className="w-full"
             src={`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${indexToShow}.png`}
             alt={name}
+            width={500}
+            height={500}
           />
         </Link>
         <div className="capitalize text-lg">{name}</div>
