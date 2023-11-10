@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/route";
+import { Option } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function Home() {
-  const session = await getServerSession(options);
+  const session = await getServerSession(Option);
   console.log("session!");
   console.log(session);
   return (
