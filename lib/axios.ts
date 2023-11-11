@@ -21,6 +21,7 @@ export const apiRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
     const response = await axiosInstance(config);
     return response.data;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };

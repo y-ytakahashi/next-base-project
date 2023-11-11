@@ -1,20 +1,42 @@
 import * as jose from "jose";
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthOptions, Session, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
+import { fbVerifyToken } from "@/api/firebase/api";
+import { fbAdminAuth } from "@/lib/firebase/admin";
 
 export const Option: NextAuthOptions = {
   debug: true,
   providers: [
+    Credentials({
+      name: "Firebase",
+      credentials: {},
+      authorize: async (credentials, req) => {
+        console.log("next-auth 連携！");
+        console.log({ credentials });
+        const result = await fbVerifyToken(credentials?.idToken);
+        console.table(result);
+        // return null;
+        // try {
+        //   // Firebase Admin SDKを使ってidTokenを検証
+        //   const decodedToken = await fbAdminAuth.verifyIdToken(credentials?.idToken);
+        //   const user = { id: decodedToken.uid, email: decodedToken.email };
+        //   return user;
+        // } catch (error) {
+        //   throw new Error("認証に失敗しました。");
+        // }
+        return null;
+      }
+    }),
     GoogleProvider({
       clientId: String(process.env.GOOGLE_CLIENT_ID),
       clientSecret: String(process.env.GOOGLE_CLIENT_SECRET)
     })
   ],
   pages: {
-    signIn: "/auth/signIn",
-    newUser: "/auth/signUp"
+    signIn: "/auth/signIn"
   },
   callbacks: {
     session: async ({ session, user, token }: { session: Session; user: User; token: JWT }) => {

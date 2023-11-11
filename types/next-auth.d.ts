@@ -6,11 +6,17 @@ declare module "next-auth" {
     appAccessToken: string;
     idToken: string;
     provider: string;
+    user: {
+      uuid: string;
+      emailVerified?: boolean;
+    };
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
+    uid: string;
+    emailVerified?: boolean;
     iat: number;
     exp: number;
     jti: string;

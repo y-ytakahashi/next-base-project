@@ -1,8 +1,7 @@
 "use client";
-import { FirebaseError } from "@firebase/app";
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "@firebase/auth";
 import router from "next/router";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { auth } from "@/lib/firebase/client";
 
@@ -11,6 +10,7 @@ type LoginForm = {
   email: string;
   password: string;
 };
+
 export const GoogleSignUp = () => {
   const [error, setError] = useState("");
 

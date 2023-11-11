@@ -4,10 +4,10 @@ import { withAuth } from "next-auth/middleware";
 // 管理者権限が必要なパス一覧
 const authOnlyPathReg = [new RegExp(`^/example/.*$`)];
 
-export const config = {
-  // ログインページ（/login）以外を対象にする ?!で否定
-  matcher: ["/((?!auth).*)", "/((?!tether).*)"]
-};
+// export const config = {
+//   // ログインページ（/login）以外を対象にする ?!で否定
+//   matcher: ["/((?!auth).*)", "/((?!tether).*)"]
+// };
 
 export function middleware(req: NextRequest) {}
 
