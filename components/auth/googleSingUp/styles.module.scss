@@ -1,0 +1,49 @@
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .formContainer {
+    height: 100%;
+    width: 100%;
+    // 中央揃え
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 4px;
+    width: 20rem;
+    margin: 0 auto;
+
+
+    .formParts {
+      gap: 2rem;
+      display: flex;
+      padding: 1rem;
+
+      label {
+        display: block;
+        text-align: right;
+        width: 8rem;
+      }
+
+      .inputField {
+        border: 1px solid gray;
+        &:hover {
+
+        }
+      }
+    }
+  }
+
+
+}

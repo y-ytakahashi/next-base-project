@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.15",
@@ -28,6 +29,7 @@
     "zustand": "^4.4.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

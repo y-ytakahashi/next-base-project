@@ -1,9 +1,9 @@
 "use client";
-
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { Box, Button } from "@mui/material";
-import { bgcolor } from "@mui/system";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { MouseEvent } from "react";
 import { auth } from "@/lib/firebase/client";
@@ -19,12 +19,24 @@ const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
 };
 
 export const GoogleSignInButton = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    // ユーザーがログインしていれば、ホームページにリダイレクト
+    if (session) {
+      router.push("/example");
+    }
+  }, [router, session]);
+
+  useEffect(() => {}, []);
   const signInHandler = async (data: SignInForm) => {
     const { email, password } = data;
-    const res = await signInWithEmailAndPassword(auth, email, password);
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
+    const token = await user.getIdToken();
+
     // TODO 暫定で認証情報を固定している
-    const signInres = await signIn("credentials", { idToken: res._tokenResponse.idToken });
-    console.log(res);
+    const signInres = await signIn("credentials", { idToken: token, callbackUrl: "/example" });
 
     console.log(signInres);
   };
