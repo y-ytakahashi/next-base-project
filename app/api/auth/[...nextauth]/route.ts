@@ -1,33 +1,28 @@
 import * as jose from "jose";
 import NextAuth from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import type { NextAuthOptions, Session, User } from "next-auth";
+import type { Account, NextAuthOptions, Session, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import { fbVerifyToken } from "@/api/firebase/api";
-import { fbAdminAuth } from "@/lib/firebase/admin";
 
 export const Option: NextAuthOptions = {
   debug: true,
   providers: [
+    // ユーザー新規作成時に利用
     Credentials({
-      name: "Firebase",
-      credentials: {},
+      name: "Firebase Authenticator",
+      credentials: {
+        idToken: { label: "ID Token", type: "text" }
+      },
       authorize: async (credentials, req) => {
-        console.log("next-auth 連携！");
-        console.log({ credentials });
-        const result = await fbVerifyToken(credentials?.idToken);
-        console.table(result);
-        // return null;
-        // try {
-        //   // Firebase Admin SDKを使ってidTokenを検証
-        //   const decodedToken = await fbAdminAuth.verifyIdToken(credentials?.idToken);
-        //   const user = { id: decodedToken.uid, email: decodedToken.email };
-        //   return user;
-        // } catch (error) {
-        //   throw new Error("認証に失敗しました。");
-        // }
-        return null;
+        if (credentials == null) return null;
+        const idToken = credentials.idToken;
+        const { users } = await fbVerifyToken(idToken);
+        console.log("verify user");
+        console.log(users);
+        return { ...users[0], idToken };
       }
     }),
     GoogleProvider({
@@ -39,19 +34,20 @@ export const Option: NextAuthOptions = {
     signIn: "/auth/signIn"
   },
   callbacks: {
-    session: async ({ session, user, token }: { session: Session; user: User; token: JWT }) => {
-      if (token.sub != null && token.provider != null) {
+    session: async ({ session, token }: { session: Session; token: JWT }) => {
+      if (token.idToken != null && token.provider != null) {
         const payload = {
           sub: token.sub,
           provider: String(token.provider),
-          userRole: "admin1",
           idToken: String(token.idToken)
         };
+        console.log({ payload });
 
         const secret = new TextEncoder().encode(String(process.env.APP_ACCESS_TOKEN_SECRET));
 
         const alg = "HS256";
 
+        // バックエンドと通信するときにappAccessTokenを利用する
         session.appAccessToken = await new jose.SignJWT(payload)
           .setProtectedHeader({ alg })
           .setExpirationTime("30d")
@@ -61,13 +57,21 @@ export const Option: NextAuthOptions = {
 
       return session;
     },
-    jwt: async ({ token, account }) => {
-      if (account) {
+    jwt: async ({ token, account, user }: { token: JWT; account: Account | null; user: User | AdapterUser }) => {
+      // 新規でログインした場合こちらの分岐に入る
+      if (account && user) {
+        token.uid = user.localId;
         token.provider = account.provider;
-        token.idToken = account.id_token;
-        // id_tokenをどうにかする場所
-        console.log({ account });
+        token.idToken = user.idToken;
+        token.email = user.email;
+        token.emailVerified = user.emailVerified;
       }
+      console.log("JWT");
+      console.log({ token });
+      console.log("Account");
+      console.log({ account });
+      console.log("User");
+      console.log({ user });
 
       return token;
     }

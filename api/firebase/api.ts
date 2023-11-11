@@ -16,13 +16,16 @@ export const fbCreateAccount = async ({ email, password }: { email: string; pass
   return await apiRequest(config);
 };
 
-export const fbVerifyToken = async (token: string): Promise<any> => {
+export const fbVerifyToken = async (token: string | undefined): Promise<any> => {
   const apiKey = "AIzaSyA0O40wbBO08WlvdNrZ5KzufeD_Y9EbwfU";
   const config: AxiosRequestConfig = {
     method: "POST",
     baseURL: "https://identitytoolkit.googleapis.com/v1",
     url: `/accounts:lookup?key=${apiKey}`,
-    data: token
+    data: {
+      idToken: token,
+      returnSecureToken: true
+    }
   };
   return await apiRequest(config);
 };

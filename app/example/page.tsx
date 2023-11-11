@@ -10,6 +10,7 @@ const ExamplePage = async () => {
     <Box>
       ExamplePage
       <Typography variant="h3">{session?.user?.name}</Typography>
+      <Typography variant="h3">{session?.user?.email}</Typography>
       <Typography variant="h3">{session?.appAccessToken}</Typography>
       <Typography variant="h3">{session?.idToken}</Typography>
       <Box>
