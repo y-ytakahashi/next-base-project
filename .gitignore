@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secret fibrease key
+/secret/next-base-403406-firebase-adminsdk-vcrat-17470217f3.json

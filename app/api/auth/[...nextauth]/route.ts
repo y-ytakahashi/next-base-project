@@ -17,7 +17,7 @@ export const Option: NextAuthOptions = {
     newUser: "/auth/signUp"
   },
   callbacks: {
-    session: async ({ session, token }: { session: Session; user: User; token: JWT }) => {
+    session: async ({ session, user, token }: { session: Session; user: User; token: JWT }) => {
       if (token.sub != null && token.provider != null) {
         const payload = {
           sub: token.sub,
